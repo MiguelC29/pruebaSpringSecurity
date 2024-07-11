@@ -1,5 +1,10 @@
-package com.felysoft.felysoftApp.auth;
+package com.felysoft.felysoftApp.controller;
 
+import com.felysoft.felysoftApp.dto.AuthenticationRequest;
+import com.felysoft.felysoftApp.dto.AuthenticationResponse;
+import com.felysoft.felysoftApp.auth.AuthenticationService;
+import com.felysoft.felysoftApp.auth.RegisterRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -20,7 +25,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(service.authenticate(request));
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest authRequest) {
+        return ResponseEntity.ok(service.authenticate(authRequest));
     }
 }

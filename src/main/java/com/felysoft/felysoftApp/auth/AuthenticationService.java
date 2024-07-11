@@ -1,9 +1,11 @@
 package com.felysoft.felysoftApp.auth;
 
 import com.felysoft.felysoftApp.config.JwtService;
-import com.felysoft.felysoftApp.user.Role;
-import com.felysoft.felysoftApp.user.User;
-import com.felysoft.felysoftApp.user.UserRepository;
+import com.felysoft.felysoftApp.dto.AuthenticationRequest;
+import com.felysoft.felysoftApp.dto.AuthenticationResponse;
+import com.felysoft.felysoftApp.util.Role;
+import com.felysoft.felysoftApp.entity.User;
+import com.felysoft.felysoftApp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

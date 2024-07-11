@@ -1,4 +1,4 @@
-package com.felysoft.felysoftApp.auth;
+package com.felysoft.felysoftApp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class AuthenticationRequest {
+public class AuthenticationResponse {
 
-    private String email;
-    private String password;
+    private String jwt;
 }

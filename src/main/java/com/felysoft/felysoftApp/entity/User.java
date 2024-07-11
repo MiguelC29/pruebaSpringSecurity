@@ -1,5 +1,6 @@
-package com.felysoft.felysoftApp.user;
+package com.felysoft.felysoftApp.entity;
 
+import com.felysoft.felysoftApp.util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -20,11 +22,10 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
-    private Integer id;
-    private String firstname;
-    private String lastname;
-    private String email;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String username;
+    private String name;
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -32,9 +33,16 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        List<GrantedAuthority> authorities = role.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                .collect(Collectors.toList());
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+
+        return authorities;
     }
 
+    /*
     @Override
     public String getPassword() {
         return password;
@@ -44,7 +52,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
-
+    */
     @Override
     public boolean isAccountNonExpired() {
         return true;
