@@ -27,6 +27,10 @@ public enum Role {
     CUSTOMER(Arrays.asList(
             Permission.READ_ALL_PRODUCTS,
             Permission.READ_MY_PROFILE
+    )),
+    USER(Arrays.asList(
+            Permission.READ_ALL_PRODUCTS,
+            Permission.READ_MY_PROFILE
     ));
 
     private final List<Permission> permissions;

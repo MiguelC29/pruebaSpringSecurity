@@ -2,6 +2,7 @@ package com.felysoft.felysoftApp.controller;
 
 import com.felysoft.felysoftApp.dto.AuthenticationRequest;
 import com.felysoft.felysoftApp.dto.AuthenticationResponse;
+import com.felysoft.felysoftApp.dto.RegisterRequest;
 import com.felysoft.felysoftApp.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,12 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest authRequest) {
         return ResponseEntity.ok(authenticationService.login(authRequest));
+    }
+
+    @PreAuthorize("permitAll")
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegisterRequest authRequest) {
+        return ResponseEntity.ok(authenticationService.register(authRequest));
     }
 
     @PreAuthorize("permitAll")

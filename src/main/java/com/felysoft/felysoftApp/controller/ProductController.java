@@ -36,29 +36,11 @@ public class ProductController {
         return ResponseEntity.notFound().build();
     }
 
-    @PreAuthorize("hasAuthority('SAVE_ONE_PRODUCT')")
+    @PreAuthorize("hasAuthority('CREATE_ONE_PRODUCT')")
     @PostMapping
     public ResponseEntity<Product> createOne(@RequestBody @Valid Product product) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 productRepository.save(product)
         );
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception exception, HttpServletRequest request) {
-
-        Map<String, String> apiError = new HashMap<>();
-        apiError.put("message", exception.getLocalizedMessage());
-        apiError.put("timestamp", new Date().toString());
-        apiError.put("url", request.getRequestURL().toString());
-        apiError.put("http-method", request.getMethod());
-
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        if (exception instanceof AccessDeniedException) {
-            status = HttpStatus.FORBIDDEN;
-        }
-
-        return ResponseEntity.status(status).body(apiError);
     }
 }

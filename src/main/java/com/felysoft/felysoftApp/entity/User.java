@@ -3,6 +3,7 @@ package com.felysoft.felysoftApp.entity;
 import com.felysoft.felysoftApp.util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -23,8 +25,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name; //firstname, lastname,
     private String username;
-    private String name;
+    private String email;
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -39,6 +42,15 @@ public class User implements UserDetails {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
         return authorities;
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
