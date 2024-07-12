@@ -2,7 +2,6 @@ package com.felysoft.felysoftApp.config.security;
 
 import com.felysoft.felysoftApp.config.security.filter.JwtAuthenticationFilter;
 import com.felysoft.felysoftApp.util.Permission;
-import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,16 +40,14 @@ public class HttpSecurityConfig {
     }
 
     private static Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> builderRequestMatchers() {
-        return authConfig -> {
-            authConfig
-                    .requestMatchers(HttpMethod.POST, "/api/auth/authenticate").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/auth/public-access").permitAll()
-                    .requestMatchers("/error").permitAll()
+        return authConfig -> authConfig
+                .requestMatchers(HttpMethod.POST, "/api/auth/authenticate").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/auth/public-access").permitAll()
+                .requestMatchers("/error").permitAll()
 
-                    .requestMatchers(HttpMethod.GET, "/api/products").hasAuthority(Permission.READ_ALL_PRODUCTS.name())
-                    .requestMatchers(HttpMethod.POST, "/api/products").hasAuthority(Permission.SAVE_ONE_PRODUCT.name())
+                .requestMatchers(HttpMethod.GET, "/api/products").hasAuthority(Permission.READ_ALL_PRODUCTS.name())
+                .requestMatchers(HttpMethod.POST, "/api/products").hasAuthority(Permission.SAVE_ONE_PRODUCT.name())
 
-                    .anyRequest().denyAll();
-        };
+                .anyRequest().denyAll();
     }
 }

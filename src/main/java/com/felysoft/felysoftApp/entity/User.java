@@ -3,7 +3,6 @@ package com.felysoft.felysoftApp.entity;
 import com.felysoft.felysoftApp.util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -24,6 +22,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String username;
     private String name;
     private String password;
@@ -42,17 +41,6 @@ public class User implements UserDetails {
         return authorities;
     }
 
-    /*
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-    */
     @Override
     public boolean isAccountNonExpired() {
         return true;

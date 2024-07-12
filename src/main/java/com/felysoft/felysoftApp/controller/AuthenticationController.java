@@ -18,12 +18,6 @@ public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
 
-    /*
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(service.register(request));
-    }*/
-
     @PreAuthorize("permitAll")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest authRequest) {
@@ -32,7 +26,7 @@ public class AuthenticationController {
 
     @PreAuthorize("permitAll")
     @GetMapping("/public-access")
-    public String publicAccessEndPoint() {
+    public String publicAccessEndpoint(){
         return "este endpoint es público";
     }
 }

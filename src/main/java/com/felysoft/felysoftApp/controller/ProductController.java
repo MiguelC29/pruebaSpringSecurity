@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -46,17 +45,17 @@ public class ProductController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleGenericException(Exception exception, HttpServletRequest request) {
 
         Map<String, String> apiError = new HashMap<>();
-        apiError.put("message", ex.getLocalizedMessage());
+        apiError.put("message", exception.getLocalizedMessage());
         apiError.put("timestamp", new Date().toString());
         apiError.put("url", request.getRequestURL().toString());
         apiError.put("http-method", request.getMethod());
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        if (ex instanceof AccessDeniedException) {
+        if (exception instanceof AccessDeniedException) {
             status = HttpStatus.FORBIDDEN;
         }
 

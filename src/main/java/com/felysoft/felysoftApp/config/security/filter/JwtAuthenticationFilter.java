@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
     public JwtAuthenticationFilter(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -41,13 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        //1. Obtener el header ue contiene el jwt
+        //1. Obtener el header que contiene el jwt
         final String authHeader = request.getHeader("Authorization"); // Bearer jwt
 
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+
         //2. Obtener jwt desde header
         final String jwt = authHeader.split(" ")[1]; //jwt = authHeader.substring(7);
 
