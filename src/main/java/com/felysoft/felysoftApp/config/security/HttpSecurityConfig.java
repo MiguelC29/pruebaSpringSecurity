@@ -46,7 +46,7 @@ public class HttpSecurityConfig {
                 .requestMatchers("/error").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/api/products").hasAuthority(Permission.READ_ALL_PRODUCTS.name())
-                .requestMatchers(HttpMethod.POST, "/api/products").hasAuthority(Permission.SAVE_ONE_PRODUCT.name())
+                .requestMatchers(HttpMethod.POST, "/api/products").hasAuthority(Permission.CREATE_ONE_PRODUCT.name())
 
                 .anyRequest().denyAll();
     }
