@@ -45,5 +45,4 @@ public class Sale implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "fkIdDetail", referencedColumnName = "idDetail")
     )
     private List<Detail> details;
-
 }
