@@ -32,9 +32,8 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest authRequest) {
         var user = User.builder()
-                //.firstname(authRequest.getFirstname())
-                //.lastname(authRequest.getLastname())
-                .name(authRequest.getName())
+                // FALTAN AÑADIR LOS DATOS QUE SE CREAN CORRESPONDIENTES, PARA LOS USUARIOS COMUNES
+                .names(authRequest.getName())
                 .username(authRequest.getUsername())
                 .email(authRequest.getEmail())
                 .password(passwordEncoder.encode(authRequest.getPassword()))
@@ -63,7 +62,7 @@ public class AuthenticationService {
 
     private Map<String, Object> generateExtraClaims(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("name", user.getName());
+        extraClaims.put("name", user.getNames());
         extraClaims.put("role", user.getRole().name());
         extraClaims.put("permissions", user.getAuthorities());
 

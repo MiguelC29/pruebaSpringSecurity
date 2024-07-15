@@ -61,7 +61,7 @@ public class User implements UserDetails {
     @Column(length = 45, nullable = false)
     private String username;
 
-    @Column(length = 45, nullable = false)
+    @Column(nullable = false)
     private String password;
 
     private String nameImg;
