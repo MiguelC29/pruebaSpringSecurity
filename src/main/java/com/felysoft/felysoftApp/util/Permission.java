@@ -13,5 +13,7 @@ public enum Permission {
     UPDATE_ONE_CATEGORY,
     DISABLE_ONE_CATEGORY,
 
+    READ_ALL_USERS,
+
     READ_MY_PROFILE
 }

@@ -54,4 +54,13 @@ public class JwtService {
                 .parseSignedClaims(jwt)
                 .getPayload();
     }
+
+    public boolean isTokenValid(String jwt, User user) {
+        final String username = extractUsername(jwt);
+        return (username.equals(user.getUsername()) && !isTokenExpired(jwt));
+    }
+
+    private boolean isTokenExpired(String jwt) {
+        return extractAllClaims(jwt).getExpiration().before(new Date());
+    }
 }

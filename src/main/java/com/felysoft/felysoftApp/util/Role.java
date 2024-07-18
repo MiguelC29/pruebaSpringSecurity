@@ -22,6 +22,8 @@ public enum Role {
             Permission.UPDATE_ONE_CATEGORY,
             Permission.DISABLE_ONE_CATEGORY,
 
+            Permission.READ_ALL_USERS,
+
             Permission.READ_MY_PROFILE
     )),
     CUSTOMER(Arrays.asList(

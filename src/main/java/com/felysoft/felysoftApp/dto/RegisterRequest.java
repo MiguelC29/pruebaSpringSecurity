@@ -1,5 +1,7 @@
 package com.felysoft.felysoftApp.dto;
 
+import com.felysoft.felysoftApp.entity.User;
+import com.felysoft.felysoftApp.util.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,10 +11,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class RegisterRequest {
 
-    //private String firstname;
-    //private String lastname;
-    private String name;
-    private String username;
+    private Long numIdentification;
+    private User.TypeDoc typeDoc;
+    private String names;
+    private String lastNames;
+    private String address;
+    private Long phoneNumber;
     private String email;
+    private User.Gender gender;
+    private String username;
     private String password;
+    private Role role;
 }

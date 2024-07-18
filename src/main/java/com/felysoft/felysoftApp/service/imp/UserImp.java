@@ -4,12 +4,15 @@ import com.felysoft.felysoftApp.entity.User;
 import com.felysoft.felysoftApp.repository.UserRepository;
 import com.felysoft.felysoftApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserImp implements UserService {
+public class UserImp implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -42,5 +45,10 @@ public class UserImp implements UserService {
     @Override
     public void delete(User user) {
         this.userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.userRepository.findByEmail(username).orElseThrow();
     }
 }

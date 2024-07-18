@@ -1,8 +1,8 @@
 package com.felysoft.felysoftApp.config.security.filter;
 
 import com.felysoft.felysoftApp.entity.User;
-import com.felysoft.felysoftApp.repository.UserRepository;
 import com.felysoft.felysoftApp.service.JwtService;
+import com.felysoft.felysoftApp.service.imp.UserImp;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    public JwtAuthenticationFilter(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserImp userImp;
 
     @Override
     protected void doFilterInternal(
@@ -44,30 +40,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //1. Obtener el header que contiene el jwt
         final String authHeader = request.getHeader("Authorization"); // Bearer jwt
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) { //authHeader.isBlank()
             filterChain.doFilter(request, response);
             return;
         }
 
         //2. Obtener jwt desde header
-        final String jwt = authHeader.split(" ")[1]; //jwt = authHeader.substring(7);
+        final String jwt = authHeader.substring(7); //authHeader.split(" ")[1];
 
         //3. Obtener subject/userEmail desde el jwt
         final String userEmail = jwtService.extractUsername(jwt);
 
-        //4. Setear un objeto Authentication dentro del SecurityContext
-        User user = userRepository.findByEmail(userEmail).get();
-
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userEmail,
-                    null,
-                    user.getAuthorities()
-            );
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            //4. Setear un objeto Authentication dentro del SecurityContext
+            User user = (User) userImp.loadUserByUsername(userEmail);
+
+            if (jwtService.isTokenValid(jwt, user)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userEmail,
+                        null,
+                        user.getAuthorities()
+                );
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
         }
 
         //5. Ejecutar el resto de filtros
