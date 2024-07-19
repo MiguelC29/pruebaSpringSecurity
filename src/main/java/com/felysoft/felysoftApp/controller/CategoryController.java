@@ -2,6 +2,7 @@ package com.felysoft.felysoftApp.controller;
 
 import com.felysoft.felysoftApp.entity.Category;
 import com.felysoft.felysoftApp.service.imp.CategoryImp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.Map;
 @RestController // API REST
 @RequestMapping(path = "/api/category/", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.HEAD})
 @CrossOrigin("http://localhost:3000")
+@RequiredArgsConstructor
 public class CategoryController {
 
     @Autowired

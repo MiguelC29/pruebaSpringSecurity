@@ -5,7 +5,6 @@ import com.felysoft.felysoftApp.dto.RegisterRequest;
 import com.felysoft.felysoftApp.dto.ReqRes;
 import com.felysoft.felysoftApp.entity.User;
 import com.felysoft.felysoftApp.service.AuthenticationService;
-import com.felysoft.felysoftApp.service.imp.UserImp;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api/auth", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.HEAD})
+@RequestMapping(path = "/api/auth/", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.HEAD})
 @CrossOrigin("http://localhost:3000")
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -25,37 +24,43 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PreAuthorize("permitAll")
-    @PostMapping("/login")
+    @PostMapping("login")
     public ResponseEntity<ReqRes> login(@RequestBody @Valid AuthenticationRequest authRequest) {
         return ResponseEntity.ok(authenticationService.login(authRequest));
     }
 
     @PreAuthorize("permitAll")
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<ReqRes> register(@RequestBody @Valid RegisterRequest authRequest) {
         return ResponseEntity.ok(authenticationService.register(authRequest));
     }
 
     @PreAuthorize("permitAll")
-    @PostMapping("/refresh")
+    @PostMapping("refresh")
     public ResponseEntity<ReqRes> refreshToken(@RequestBody @Valid ReqRes req) {
         return ResponseEntity.ok(authenticationService.refreshToken(req));
     }
 
     @PreAuthorize("hasAuthority('READ_ALL_USERS')")
-    @GetMapping("/admin/get-all-users")
+    @GetMapping("admin/get-all-users")
     public ResponseEntity<ReqRes> getAllUsers() {
         return ResponseEntity.ok(authenticationService.getAllUsers());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
-    @PostMapping("/admin/update/{userId}")
+    @PreAuthorize("hasAuthority('READ_ONE_USER')")
+    @GetMapping("admin/get-user/{userId}")
+    public ResponseEntity<ReqRes> getUserById(@PathVariable Long userId) {
+        return ResponseEntity.ok(authenticationService.getUserById(userId));
+    }
+
+    @PreAuthorize("hasAuthority('UPDATE_ONE_USER')")
+    @PostMapping("admin/update/{userId}")
     public ResponseEntity<ReqRes> updateUser(@PathVariable Long userId, @RequestBody User user) {
         return ResponseEntity.ok(authenticationService.updateUser(userId, user));
     }
 
-    @PreAuthorize("hasAnyRole()")
-    @GetMapping("/adminuser/get-profile")
+    @PreAuthorize("hasAuthority('READ_MY_PROFILE')")
+    @GetMapping("adminuser/get-profile")
     public ResponseEntity<ReqRes> getProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -63,8 +68,8 @@ public class AuthenticationController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @PreAuthorize("hasPermission('ADMINISTRATOR')")
-    @PostMapping("/admin/delete/{userId}")
+    @PreAuthorize("hasAuthority('DISABLE_ONE_USER')")
+    @PostMapping("admin/delete/{userId}")
     public ResponseEntity<ReqRes> deleteUser(@PathVariable Long userId) {
         return ResponseEntity.ok(authenticationService.deleteUser(userId));
     }

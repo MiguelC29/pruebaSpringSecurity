@@ -14,6 +14,10 @@ public enum Permission {
     DISABLE_ONE_CATEGORY,
 
     READ_ALL_USERS,
+    READ_ONE_USER,
+    CREATE_ONE_USER,
+    UPDATE_ONE_USER,
+    DISABLE_ONE_USER,
 
     READ_MY_PROFILE
 }
