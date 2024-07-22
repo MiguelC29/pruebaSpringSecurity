@@ -69,7 +69,7 @@ public class AuthenticationController {
     }
 
     @PreAuthorize("hasAuthority('DISABLE_ONE_USER')")
-    @PostMapping("admin/delete/{userId}")
+    @DeleteMapping("admin/delete/{userId}")
     public ResponseEntity<ReqRes> deleteUser(@PathVariable Long userId) {
         return ResponseEntity.ok(authenticationService.deleteUser(userId));
     }
