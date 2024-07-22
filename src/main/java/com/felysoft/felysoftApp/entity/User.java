@@ -59,7 +59,7 @@ public class User implements UserDetails {
     private Gender gender;
 
     @Column(length = 45, nullable = false)
-    private String username;
+    private String user_name;
 
     @Column(nullable = false)
     private String password;

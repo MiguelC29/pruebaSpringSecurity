@@ -108,7 +108,7 @@ public class UserController {
                     .phoneNumber(phoneNumber)
                     .email(email.toLowerCase())
                     .gender(gender)
-                    .username(username)
+                    .user_name(username)
                     .password(password)
                     .dateRegister(new Timestamp(System.currentTimeMillis()))
                     .lastModification(new Timestamp(System.currentTimeMillis()));
@@ -201,7 +201,7 @@ public class UserController {
             }
 
             if (username != null) {
-                user.setUsername(username);
+                user.setUser_name(username);
             }
 
             if (password != null) {

@@ -19,7 +19,7 @@ public class RegisterRequest {
     private Long phoneNumber;
     private String email;
     private User.Gender gender;
-    private String username;
+    private String user_name;
     private String password;
     private Role role;
 }
