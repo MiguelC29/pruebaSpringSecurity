@@ -42,7 +42,7 @@ public class AuthenticationService {
                     .address(authRequest.getAddress())
                     .phoneNumber(authRequest.getPhoneNumber())
                     .gender(authRequest.getGender())
-                    .username(authRequest.getUsername())
+                    .user_name(authRequest.getUser_name())
                     .email(authRequest.getEmail())
                     .password(passwordEncoder.encode(authRequest.getPassword()))
                     .role(authRequest.getRole())
@@ -82,7 +82,8 @@ public class AuthenticationService {
             //var refreshToken = jwtService.generateRefreshToken(user, new HashMap<>());
             response.setStatusCode(200);
             response.setToken(jwtToken);
-            //response.setRefreshToken(refreshToken);
+            response.setRole(user.getRole());
+            // response.setRefreshToken(refreshToken);
             response.setExpirationTime("3Hrs");
             response.setMessage("Successfully Logged In");
         } catch (Exception e) {
@@ -173,9 +174,15 @@ public class AuthenticationService {
             Optional<User> userOptional = userRepository.findById(id);
             if (userOptional.isPresent()) {
                 User existingUser = userOptional.get();
+                existingUser.setNumIdentification(updaUser.getNumIdentification());
+                existingUser.setTypeDoc(updaUser.getTypeDoc());
                 existingUser.setNames(updaUser.getNames());
+                //existingUser.setLastNames(updaUser.getLastNames());
+                existingUser.setAddress(updaUser.getAddress());
+                existingUser.setPhoneNumber(updaUser.getPhoneNumber());
+                existingUser.setGender(updaUser.getGender());
+                existingUser.setUser_name(updaUser.getUser_name());
                 existingUser.setEmail(updaUser.getEmail());
-                existingUser.setUsername(updaUser.getUsername());
                 existingUser.setRole(updaUser.getRole());
 
                 //Check if password is present in the request
