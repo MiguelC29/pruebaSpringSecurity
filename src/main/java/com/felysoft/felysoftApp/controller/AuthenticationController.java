@@ -41,24 +41,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.refreshToken(req));
     }
 
-    @PreAuthorize("hasAuthority('READ_ALL_USERS')")
-    @GetMapping("admin/get-all-users")
-    public ResponseEntity<ReqRes> getAllUsers() {
-        return ResponseEntity.ok(authenticationService.getAllUsers());
-    }
-
-    @PreAuthorize("hasAuthority('READ_ONE_USER')")
-    @GetMapping("admin/get-user/{userId}")
-    public ResponseEntity<ReqRes> getUserById(@PathVariable Long userId) {
-        return ResponseEntity.ok(authenticationService.getUserById(userId));
-    }
-
-    @PreAuthorize("hasAuthority('UPDATE_ONE_USER')")
-    @PostMapping("admin/update/{userId}")
-    public ResponseEntity<ReqRes> updateUser(@PathVariable Long userId, @RequestBody User user) {
-        return ResponseEntity.ok(authenticationService.updateUser(userId, user));
-    }
-
     @PreAuthorize("hasAuthority('READ_MY_PROFILE')")
     @GetMapping("adminuser/get-profile")
     public ResponseEntity<ReqRes> getProfile() {
@@ -66,11 +48,5 @@ public class AuthenticationController {
         String email = authentication.getName();
         ReqRes response = authenticationService.getMyInfo(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-
-    @PreAuthorize("hasAuthority('DISABLE_ONE_USER')")
-    @DeleteMapping("admin/delete/{userId}")
-    public ResponseEntity<ReqRes> deleteUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(authenticationService.deleteUser(userId));
     }
 }

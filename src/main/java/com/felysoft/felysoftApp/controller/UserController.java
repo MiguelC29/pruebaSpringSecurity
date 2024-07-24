@@ -1,6 +1,7 @@
 package com.felysoft.felysoftApp.controller;
 
 //import com.felysoft.felysoftApp.entity.Role;
+import com.felysoft.felysoftApp.dto.ReqRes;
 import com.felysoft.felysoftApp.entity.User;
 import com.felysoft.felysoftApp.service.imp.RoleImp;
 import com.felysoft.felysoftApp.service.imp.UserImp;
@@ -8,6 +9,8 @@ import com.felysoft.felysoftApp.util.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,37 +25,47 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserImp userImp;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /*@Autowired
     private RoleImp roleImp;*/
 
+    @PreAuthorize("hasAuthority('READ_ALL_USERS')")
     @GetMapping("all")
     public ResponseEntity<Map<String, Object>> findAll(){
-        Map<String,Object> response= new HashMap<>();
-        try{
-            List<User> userList= this.userImp.findAll();
-
-            response.put("status","success");
-            response.put("data", userList);
-        }catch (Exception e){
-            response.put("status", HttpStatus.BAD_GATEWAY);
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<User> userList = this.userImp.findAll();
+            if (!userList.isEmpty()) {
+                response.put("status","success");
+                response.put("data", userList);
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND);
+                response.put("data", "User Not Found");
+            }
+        } catch (Exception e){
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAuthority('READ_ONE_USER')")
     @GetMapping("list/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
         try {
-            User user = this.userImp.findById(id);
-
+            User userById = this.userImp.findById(id);
+            if (userById == null) throw new RuntimeException("User Not found");
             response.put("status", "success");
-            response.put("data", user);
+            response.put("data", userById);
+            response.put("message", "User with id '" + id + "' found successfully");
         } catch (Exception e) {
-            response.put("status", HttpStatus.BAD_GATEWAY);
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -80,6 +93,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('CREATE_ONE_USER')")
     @PostMapping("create")
     public ResponseEntity<Map<String, Object>> create(
             @RequestParam("numIdentification") Long numIdentification,
@@ -109,7 +123,7 @@ public class UserController {
                     .email(email.toLowerCase())
                     .gender(gender)
                     .user_name(username)
-                    .password(password)
+                    .password(passwordEncoder.encode(password))
                     .dateRegister(new Timestamp(System.currentTimeMillis()))
                     .lastModification(new Timestamp(System.currentTimeMillis()));
 
@@ -140,6 +154,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_ONE_USER')")
     @PutMapping("update/{id}")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id,
           @RequestParam(value = "numIdentification", required = false) Long numIdentification,
@@ -192,10 +207,6 @@ public class UserController {
                 user.setPhoneNumber(phoneNumber);
             }
 
-            if (email != null) {
-                user.setEmail(email.toLowerCase());
-            }
-
             if (gender != null) {
                 user.setGender(gender);
             }
@@ -204,8 +215,8 @@ public class UserController {
                 user.setUser_name(username);
             }
 
-            if (password != null) {
-                user.setPassword(password);
+            if (email != null) {
+                user.setEmail(email.toLowerCase());
             }
 
             if (image != null) {
@@ -216,13 +227,16 @@ public class UserController {
 
 //            if (role != null) {
                 //Role role = roleImp.findById(fkIdRole);
-                if (role == null) {
-                    response.put("status", HttpStatus.NOT_FOUND);
-                    response.put("data", "Rol no encontrado");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                }
+            if (role != null) {
                 user.setRole(role);
+            }
 //            }
+
+            //Check if password is present in the request
+            if (password != null && !password.isEmpty()) {
+                // Encode the password and update it
+                user.setPassword(passwordEncoder.encode(password));
+            }
 
             // Actualizar la fecha de última modificación
             user.setLastModification(new Timestamp(System.currentTimeMillis()));
@@ -230,30 +244,35 @@ public class UserController {
             this.userImp.update(user);
 
             response.put("status", "success");
-            response.put("data", "Actualización exitosa");
+            response.put("data", "Datos del Usuario actualizados correctamente");
         } catch (Exception e) {
-            response.put("status", HttpStatus.BAD_GATEWAY);
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('DISABLE_ONE_USER')")
     @PutMapping("delete/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
         try {
             User user = this.userImp.findById(id);
-            user.setEliminated(true);
 
-            this.userImp.delete(user);
-
-            response.put("status", "success");
-            response.put("data", "Eliminado Correctamente");
+            if (user != null) {
+                user.setEliminated(true);
+                this.userImp.delete(user);
+                response.put("status", "success");
+                response.put("data", "Usuario Eliminado Correctamente");
+            } else {
+                response.put("status", HttpStatus.NOT_FOUND);
+                response.put("data", "User not found for deletion");
+            }
         } catch (Exception e) {
-            response.put("status", HttpStatus.BAD_GATEWAY);
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

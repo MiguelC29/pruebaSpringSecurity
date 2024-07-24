@@ -76,7 +76,7 @@ public class AuthenticationService {
                     )
             );
 
-            User user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow(); // findByUsername
+            User user = userRepository.findByEmailAndEliminatedFalse(authRequest.getEmail()).orElseThrow(); // findByUsername
 
             var jwtToken = jwtService.generateToken(user, generateExtraClaims(user));
             //var refreshToken = jwtService.generateRefreshToken(user, new HashMap<>());
@@ -98,7 +98,7 @@ public class AuthenticationService {
         ReqRes response = new ReqRes();
         try {
             String email = jwtService.extractUsername(refreshTokenRegist.getToken());
-            User user = userRepository.findByEmail(email).orElseThrow();
+            User user = userRepository.findByEmailAndEliminatedFalse(email).orElseThrow();
             if (jwtService.isTokenValid(refreshTokenRegist.getToken(), user)) {
                 var jwt = jwtService.generateToken(user, generateExtraClaims(user));
                 response.setStatusCode(200);
@@ -115,101 +115,10 @@ public class AuthenticationService {
         return response;
     }
 
-    public ReqRes getAllUsers() {
-        ReqRes reqRes = new ReqRes();
-
-        try {
-            List<User> result = userRepository.findAll();
-            if (!result.isEmpty()) {
-                reqRes.setUsers(result);
-                reqRes.setStatusCode(200);
-                reqRes.setMessage("Successful");
-            } else {
-                reqRes.setStatusCode(404);
-                reqRes.setMessage("User Not Found");
-            }
-        } catch (Exception e) {
-            reqRes.setStatusCode(500);
-            reqRes.setError("Error occurred" + e.getMessage());
-        }
-        return reqRes;
-    }
-
-    public ReqRes getUserById(Long id) {
-        ReqRes reqRes = new ReqRes();
-        try {
-            User userById = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not found"));
-            reqRes.setUser(userById);
-            reqRes.setStatusCode(200);
-            reqRes.setMessage("User with id '" + id + "' found successfully");
-        } catch (Exception e) {
-            reqRes.setStatusCode(500);
-            reqRes.setError("Error occurred" + e.getMessage());
-        }
-        return reqRes;
-    }
-
-    public ReqRes deleteUser(Long id) {
-        ReqRes reqRes = new ReqRes();
-        try {
-            Optional<User> userById = userRepository.findById(id);
-            if (userById.isPresent()) {
-                userRepository.deleteById(id);
-                reqRes.setStatusCode(200);
-                reqRes.setMessage("User deleted successfully");
-            } else {
-                reqRes.setStatusCode(404);
-                reqRes.setMessage("User not found for deletion");
-            }
-        } catch (Exception e) {
-            reqRes.setStatusCode(500);
-            reqRes.setMessage("Error occurred while deleting user: " + e.getMessage());
-        }
-        return reqRes;
-    }
-
-    public ReqRes updateUser(Long id, User updaUser) {
-        ReqRes reqRes = new ReqRes();
-        try {
-            Optional<User> userOptional = userRepository.findById(id);
-            if (userOptional.isPresent()) {
-                User existingUser = userOptional.get();
-                existingUser.setNumIdentification(updaUser.getNumIdentification());
-                existingUser.setTypeDoc(updaUser.getTypeDoc());
-                existingUser.setNames(updaUser.getNames());
-                //existingUser.setLastNames(updaUser.getLastNames());
-                existingUser.setAddress(updaUser.getAddress());
-                existingUser.setPhoneNumber(updaUser.getPhoneNumber());
-                existingUser.setGender(updaUser.getGender());
-                existingUser.setUser_name(updaUser.getUser_name());
-                existingUser.setEmail(updaUser.getEmail());
-                existingUser.setRole(updaUser.getRole());
-
-                //Check if password is present in the request
-                if (updaUser.getPassword() != null && !updaUser.getPassword().isEmpty()) {
-                    // Encode the password and update it
-                    existingUser.setPassword(passwordEncoder.encode(updaUser.getPassword()));
-                }
-
-                User savedUser = userRepository.save(existingUser);
-                reqRes.setUser(savedUser);
-                reqRes.setStatusCode(200);
-                reqRes.setMessage("User updated successfully");
-            } else {
-                reqRes.setStatusCode(404);
-                reqRes.setMessage("User not found for update");
-            }
-        } catch (Exception e) {
-            reqRes.setStatusCode(500);
-            reqRes.setMessage("Error occurred while updating user: " + e.getMessage());
-        }
-        return reqRes;
-    }
-
     public ReqRes getMyInfo(String email) {
         ReqRes reqRes = new ReqRes();
         try {
-            Optional<User> userOptional = userRepository.findByEmail(email);
+            Optional<User> userOptional = userRepository.findByEmailAndEliminatedFalse(email);
             if (userOptional.isPresent()) {
                 reqRes.setUser(userOptional.get());
                 reqRes.setStatusCode(200);
