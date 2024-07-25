@@ -5,6 +5,7 @@ import com.felysoft.felysoftApp.service.imp.AuthorImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -20,6 +21,7 @@ public class AuthorController {
     @Autowired
     private AuthorImp authorImp;
 
+    @PreAuthorize("hasAuthority('READ_ALL_AUTHORS')")
     @GetMapping("all")
     public ResponseEntity<Map<String, Object>> findAll(){
         Map<String,Object> response= new HashMap<>();
@@ -36,6 +38,7 @@ public class AuthorController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ_ONE_AUTHOR')")
     @GetMapping("list/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
@@ -51,6 +54,7 @@ public class AuthorController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ_AUTHORS_BY_GENRE')")
     @GetMapping("authorsByGenre/{id}")
     public ResponseEntity<Map<String, Object>> findByIdGenre(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
@@ -66,6 +70,7 @@ public class AuthorController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('CREATE_ONE_AUTHOR')")
     @PostMapping("create")
     public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String,Object> request){
         Map<String,Object> response= new HashMap<>();
@@ -91,6 +96,7 @@ public class AuthorController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_ONE_AUTHOR')")
     @PutMapping("update/{id}")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody Map<String, Object> request) {
         Map<String, Object> response = new HashMap<>();
@@ -114,6 +120,7 @@ public class AuthorController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('DISABLE_ONE_AUTHOR')")
     @PutMapping(value = "delete/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();

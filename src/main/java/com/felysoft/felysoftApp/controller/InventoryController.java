@@ -8,6 +8,7 @@ import com.felysoft.felysoftApp.service.imp.ProductImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -64,6 +65,7 @@ public class InventoryController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ_INVENTORY_BOOKS')")
     @GetMapping("inventoryBooks")
     public ResponseEntity<Map<String, Object>> findInventoryBooks() {
         Map<String, Object> response = new HashMap<>();

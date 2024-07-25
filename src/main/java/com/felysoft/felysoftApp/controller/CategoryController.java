@@ -54,21 +54,6 @@ public class CategoryController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("categoriesByProvider/{id}")
-    public ResponseEntity<Map<String, Object>> findByIdProvider(@PathVariable Long id) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<Category> categoryList = this.categoryImp.findByIdProvider(id);
-            response.put("status", "success");
-            response.put("data", categoryList);
-        } catch (Exception e) {
-            response.put("status", HttpStatus.BAD_GATEWAY);
-            response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
-        }
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     @PreAuthorize("hasAuthority('CREATE_ONE_CATEGORY')")
     @PostMapping("create")
     public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, Object> request) {
@@ -90,31 +75,6 @@ public class CategoryController {
 
             response.put("status", "success");
             response.put("data", "Registro Exitoso");
-        } catch (Exception e) {
-            response.put("status", HttpStatus.BAD_GATEWAY);
-            response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
-        }
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping("add-provider")
-    public ResponseEntity<Map<String, Object>> addProviderToCategory(@RequestBody Map<String, Object> request) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Long categoryId = Long.parseLong(request.get("categoryId").toString());
-            Long providerId = Long.parseLong(request.get("providerId").toString());
-
-            // Verificar si la asociación ya existe
-            boolean associationExists = this.categoryImp.checkAssociationExists(categoryId, providerId);
-            if (associationExists) {
-                throw new RuntimeException("Asociación existente");
-            }
-
-            this.categoryImp.addProviderToCategory(categoryId, providerId);
-
-            response.put("status", "success");
-            response.put("data", "Asociación Exitosa");
         } catch (Exception e) {
             response.put("status", HttpStatus.BAD_GATEWAY);
             response.put("data", e.getMessage());
@@ -157,6 +117,49 @@ public class CategoryController {
 
             response.put("status", "success");
             response.put("data", "Eliminado Correctamente");
+        } catch (Exception e) {
+            response.put("status", HttpStatus.BAD_GATEWAY);
+            response.put("data", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // ASOCIATION CATEGORY - PROVIDER
+    @PreAuthorize("hasAuthority('READ_CATEGORIES_BY_PROVIDER')")
+    @GetMapping("categoriesByProvider/{id}")
+    public ResponseEntity<Map<String, Object>> findByIdProvider(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Category> categoryList = this.categoryImp.findByIdProvider(id);
+            response.put("status", "success");
+            response.put("data", categoryList);
+        } catch (Exception e) {
+            response.put("status", HttpStatus.BAD_GATEWAY);
+            response.put("data", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ASSOCIATE_CATEGORY_PROVIDER')")
+    @PostMapping("add-provider")
+    public ResponseEntity<Map<String, Object>> addProviderToCategory(@RequestBody Map<String, Object> request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Long categoryId = Long.parseLong(request.get("categoryId").toString());
+            Long providerId = Long.parseLong(request.get("providerId").toString());
+
+            // Verificar si la asociación ya existe
+            boolean associationExists = this.categoryImp.checkAssociationExists(categoryId, providerId);
+            if (associationExists) {
+                throw new RuntimeException("Asociación existente");
+            }
+
+            this.categoryImp.addProviderToCategory(categoryId, providerId);
+
+            response.put("status", "success");
+            response.put("data", "Asociación Exitosa");
         } catch (Exception e) {
             response.put("status", HttpStatus.BAD_GATEWAY);
             response.put("data", e.getMessage());
