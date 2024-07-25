@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +55,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ_ONE_PRODUCT')")
     @GetMapping("list/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
@@ -89,7 +90,7 @@ public class ProductController {
                     .name(name.toUpperCase())
                     .brand(brand.toUpperCase())
                     .salePrice(salePrice)
-                    .expiryDate(new java.sql.Date(expiryDate.getTime()));
+                    .expiryDate(new Date(expiryDate.getTime()));
 
             if (image != null) {
                 productBuilder.nameImg(image.getOriginalFilename())
@@ -136,10 +137,10 @@ public class ProductController {
                                                       @RequestParam(value = "name", required = false) String name,
                                                       @RequestParam(value = "brand", required = false) String brand,
                                                       @RequestParam(value = "salePrice", required = false) BigDecimal salePrice,
-                                                      @RequestParam(value = "expiryDate", required = false) java.sql.Date expiryDate,
+                                                      @RequestParam(value = "expiryDate", required = false) Date expiryDate,
                                                       @RequestParam(value = "category", required = false) Long categoryId,
                                                       @RequestParam(value = "provider", required = false) Long providerId,
-                                                      @RequestParam(value = "stockInicial", required = false) Integer stockInicial,
+                                                      //@RequestParam(value = "stockInicial", required = false) Integer stockInicial,
                                                       @RequestParam(value = "image", required = false) MultipartFile image) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -167,7 +168,7 @@ public class ProductController {
             }
 
             if (expiryDate != null) {
-                product.setExpiryDate(new java.sql.Date(expiryDate.getTime()));
+                product.setExpiryDate( new Date(expiryDate.getTime()));
             }
 
             if (categoryId != null) {
@@ -196,6 +197,7 @@ public class ProductController {
                 product.setTypeImg(image.getContentType());
                 product.setImage(image.getBytes());
             }
+
 
             this.productImp.update(product);
 
