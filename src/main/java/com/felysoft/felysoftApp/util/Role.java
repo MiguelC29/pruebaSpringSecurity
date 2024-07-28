@@ -31,6 +31,12 @@ public enum Role {
             Permission.DISABLE_ONE_PROVIDER,
             Permission.READ_PROVIDERS_BY_CATEGORY,
 
+            Permission.READ_ALL_SERVICES,
+            Permission.READ_ONE_SERVICE,
+            Permission.CREATE_ONE_SERVICE,
+            Permission.UPDATE_ONE_SERVICE,
+            Permission.DISABLE_ONE_SERVICE,
+
             Permission.READ_ALL_TYPE_SERVICES,
             Permission.READ_ONE_TYPE_SERVICE,
             Permission.CREATE_ONE_TYPE_SERVICE,
@@ -58,6 +64,12 @@ public enum Role {
             Permission.UPDATE_ONE_BOOK,
             Permission.DISABLE_ONE_BOOK,
             Permission.READ_INVENTORY_BOOKS,
+
+            Permission.READ_ALL_CHARGES,
+            Permission.READ_ONE_CHARGE,
+            Permission.CREATE_ONE_CHARGE,
+            Permission.UPDATE_ONE_CHARGE,
+            Permission.DISABLE_ONE_CHARGE,
 
             Permission.READ_ALL_USERS,
             Permission.READ_ONE_USER,

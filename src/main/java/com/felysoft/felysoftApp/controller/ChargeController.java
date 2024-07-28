@@ -5,6 +5,7 @@ import com.felysoft.felysoftApp.service.imp.ChargeImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class ChargeController {
     @Autowired
     private ChargeImp chargeImp;
 
+    @PreAuthorize("hasAuthority('READ_ALL_CHARGES')")
     @GetMapping("all")
     public ResponseEntity<Map<String, Object>> findAll() {
         Map<String, Object> response = new HashMap<>();
@@ -34,6 +36,7 @@ public class ChargeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ_ONE_CHARGE')")
     @GetMapping("list/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
@@ -50,6 +53,7 @@ public class ChargeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('CREATE_ONE_CHARGE')")
     @PostMapping("create")
     public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, Object> request){
         Map<String, Object> response = new HashMap<>();
@@ -71,6 +75,7 @@ public class ChargeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_ONE_CHARGE')")
     @PutMapping("update/{id}")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody Map<String, Object> request) {
         Map<String, Object> response = new HashMap<>();
@@ -93,6 +98,7 @@ public class ChargeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('DISABLE_ONE_CHARGE')")
     @PutMapping("delete/{id}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();

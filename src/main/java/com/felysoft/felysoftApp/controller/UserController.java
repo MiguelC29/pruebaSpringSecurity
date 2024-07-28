@@ -268,6 +268,7 @@ public class UserController {
             } else {
                 response.put("status", HttpStatus.NOT_FOUND);
                 response.put("data", "User not found for deletion");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
