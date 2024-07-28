@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/api/product/", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.HEAD})
+@RequestMapping(path = "/api/product/", method = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT,RequestMethod.HEAD})
 @CrossOrigin("http://localhost:3000")
 public class ProductController {
     @Autowired
@@ -198,15 +198,14 @@ public class ProductController {
                 product.setImage(image.getBytes());
             }
 
-
             this.productImp.update(product);
 
             response.put("status", "success");
             response.put("data", "Actualización exitosa");
         } catch (Exception e) {
-            response.put("status", HttpStatus.BAD_GATEWAY);
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             response.put("data", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -217,16 +216,26 @@ public class ProductController {
         Map<String, Object> response = new HashMap<>();
         try {
             Product product = this.productImp.findById(id);
+            if (product == null) {
+                response.put("status", HttpStatus.NOT_FOUND);
+                response.put("data", "Producto no encontrado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
             Inventory inventory = this.inventoryImp.findByProduct(product);
+            if (inventory == null) {
+                response.put("status", HttpStatus.NOT_FOUND);
+                response.put("data", "El producto no se encuentra en el inventario");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            } else {
+                product.setEliminated(true);
+                inventory.setEliminated(true);
 
-            product.setEliminated(true);
-            inventory.setEliminated(true);
+                this.inventoryImp.delete(inventory);
+                this.productImp.delete(product);
 
-            this.inventoryImp.delete(inventory);
-            this.productImp.delete(product);
-
-            response.put("status", "success");
-            response.put("data", "Eliminado Correctamente");
+                response.put("status", "success");
+                response.put("data", "Eliminado Correctamente");
+            }
         } catch (Exception e) {
             response.put("status", HttpStatus.BAD_GATEWAY);
             response.put("data", e.getMessage());
