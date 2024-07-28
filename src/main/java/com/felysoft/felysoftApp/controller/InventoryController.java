@@ -1,10 +1,10 @@
 package com.felysoft.felysoftApp.controller;
 
 import com.felysoft.felysoftApp.entity.Inventory;
-import com.felysoft.felysoftApp.service.imp.BookImp;
+//import com.felysoft.felysoftApp.service.imp.BookImp;
 import com.felysoft.felysoftApp.service.imp.InventoryImp;
-import com.felysoft.felysoftApp.service.imp.NoveltyInvImp;
-import com.felysoft.felysoftApp.service.imp.ProductImp;
+//import com.felysoft.felysoftApp.service.imp.NoveltyInvImp;
+//import com.felysoft.felysoftApp.service.imp.ProductImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,7 @@ public class InventoryController {
     @Autowired
     private InventoryImp inventoryImp;
 
+    /*
     @Autowired
     private ProductImp productImp;
 
@@ -31,7 +32,7 @@ public class InventoryController {
     private BookImp bookImp;
 
     @Autowired
-    private NoveltyInvImp noveltyInvImp;
+    private NoveltyInvImp noveltyInvImp;*/
 
     @GetMapping("all")
     public ResponseEntity<Map<String, Object>> findAll() {
@@ -49,6 +50,7 @@ public class InventoryController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('READ_INVENTORY_PRODUCTS')")
     @GetMapping("inventoryProducts")
     public ResponseEntity<Map<String, Object>> findInventoryProducts() {
         Map<String, Object> response = new HashMap<>();

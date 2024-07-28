@@ -1,9 +1,9 @@
 package com.felysoft.felysoftApp.controller;
 
 //import com.felysoft.felysoftApp.entity.Role;
-import com.felysoft.felysoftApp.dto.ReqRes;
+//import com.felysoft.felysoftApp.dto.ReqRes;
 import com.felysoft.felysoftApp.entity.User;
-import com.felysoft.felysoftApp.service.imp.RoleImp;
+//import com.felysoft.felysoftApp.service.imp.RoleImp;
 import com.felysoft.felysoftApp.service.imp.UserImp;
 import com.felysoft.felysoftApp.util.Role;
 import org.springframework.beans.factory.annotation.Autowired;
